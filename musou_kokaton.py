@@ -302,13 +302,17 @@ def main():
             if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
                 beams.add(Beam(bird))
             if event.type == pg.KEYDOWN and event.key == pg.K_a:
-                if score.value>=200:
+                if score.value>=100:
                     gra = Gravity(400)
                     gras.add(gra)
-                    score.value -= 200
+                    score.value -= 100
+            if event.type == pg.KEYDOWN and event.key == pg.K_RSHIFT and score.value >= 50:
+                bird.state= "hyper"
+                score.value -= 50
+                bird.hyper_life=500
         screen.blit(bg_img, [0, 0])
 
-        if tmr%200 == 0:  # 200フレームに1回，敵機を出現させる
+        if tmr%50 == 0:  # 200フレームに1回，敵機を出現させる
             emys.add(Enemy())
         # if tmr%400 == 0:
         #     shields.update(screen)
@@ -326,16 +330,6 @@ def main():
         for bomb in pg.sprite.groupcollide(bombs, beams, True, True).keys():  # ビームと衝突した爆弾リスト
             exps.add(Explosion(bomb, 50))  # 爆発エフェクト
             score.value += 1  # 1点アップ
-        
-
-        for bomb in pg.sprite.spritecollide(bird, bombs, True):  # こうかとんと衝突した爆弾リスト
-            bird.change_img(8, screen)  # こうかとん悲しみエフェクト
-            score.update(screen)
-            pg.display.update()
-            time.sleep(2)
-            return
-        
-
 
         for emy in pg.sprite.groupcollide(emys, gras, True, False).keys():
             exps.add(Explosion(emy, 100))
@@ -346,10 +340,7 @@ def main():
             exps.add(Explosion(emy, 100))
         for bomb in pg.sprite.groupcollide(bombs, gras, True, False).keys():
             exps.add(Explosion(bomb, 50))
-        if event.type == pg.KEYDOWN and event.key == pg.K_RSHIFT and score.value >= 100:
-            bird.state= "hyper"
-            score.value -= 100
-            bird.hyper_life=500
+       
 
         if bird.state=="hyper":
             for bomb in pg.sprite.spritecollide(bird, bombs, True):  # こうかとんと衝突した爆弾リスト
